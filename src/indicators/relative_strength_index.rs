@@ -1,7 +1,7 @@
 use std::fmt;
+use std::collections::VecDeque;
 
 use crate::errors::Result;
-use crate::indicators::ExponentialMovingAverage as Ema;
 use crate::{Close, Next, Period, Reset};
 use serde::{Deserialize, Serialize};
 
@@ -19,32 +19,31 @@ use serde::{Deserialize, Serialize};
 ///
 /// # Formula
 ///
-/// RSI<sub>t</sub> = EMA<sub>Ut</sub> * 100 / (EMA<sub>Ut</sub> + EMA<sub>Dt</sub>)
+/// RSI<sub>t</sub> = 100 - (100 / (1 + RS<sub>t</sub>))
 ///
 /// Where:
 ///
 /// * RSI<sub>t</sub> - value of RSI indicator in a moment of time _t_
-/// * EMA<sub>Ut</sub> - value of [EMA](struct.ExponentialMovingAverage.html) of up periods in a moment of time _t_
-/// * EMA<sub>Dt</sub> - value of [EMA](struct.ExponentialMovingAverage.html) of down periods in a moment of time _t_
+/// * RS<sub>t</sub> - Relative Strength value at time _t_
+/// * RS<sub>t</sub> = AvgGain<sub>t</sub> / AvgLoss<sub>t</sub>
+/// * AvgGain<sub>t</sub> - Average gain at time _t_, using Wilder's smoothing method
+/// * AvgLoss<sub>t</sub> - Average loss at time _t_, using Wilder's smoothing method
 ///
 /// If current period has value higher than previous period, than:
 ///
-/// U = p<sub>t</sub> - p<sub>t-1</sub>
+/// Gain = p<sub>t</sub> - p<sub>t-1</sub>
 ///
-/// D = 0
+/// Loss = 0
 ///
 /// Otherwise:
 ///
-/// U = 0
+/// Gain = 0
 ///
-/// D = p<sub>t-1</sub> - p<sub>t</sub>
+/// Loss = p<sub>t-1</sub> - p<sub>t</sub>
 ///
-/// Where:
-///
-/// * U = up period value
-/// * D = down period value
-/// * p<sub>t</sub> - input value in a moment of time _t_
-/// * p<sub>t-1</sub> - input value in a moment of time _t-1_
+/// For the initial period, simple average is used. Then for subsequent periods:
+/// * AvgGain = ((PreviousAvgGain * (period-1)) + CurrentGain) / period
+/// * AvgLoss = ((PreviousAvgLoss * (period-1)) + CurrentLoss) / period
 ///
 /// # Parameters
 ///
@@ -57,10 +56,11 @@ use serde::{Deserialize, Serialize};
 /// use ta::Next;
 ///
 /// let mut rsi = RelativeStrengthIndex::new(3).unwrap();
-/// assert_eq!(rsi.next(10.0), 50.0);
-/// assert_eq!(rsi.next(10.5).round(), 86.0);
-/// assert_eq!(rsi.next(10.0).round(), 35.0);
-/// assert_eq!(rsi.next(9.5).round(), 16.0);
+/// // First period values are NaN as per TA-Lib behavior
+/// assert!(rsi.next(10.0).is_nan());
+/// assert!(rsi.next(10.5).is_nan());
+/// assert!(rsi.next(10.0).is_nan());
+/// assert_eq!(rsi.next(9.5).round(), 33.0);
 /// ```
 ///
 /// # Links
@@ -71,20 +71,26 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RelativeStrengthIndex {
     period: usize,
-    up_ema_indicator: Ema,
-    down_ema_indicator: Ema,
     prev_val: f64,
     is_new: bool,
+    price_changes: VecDeque<(f64, f64)>,
+    avg_gain: f64,
+    avg_loss: f64,
 }
 
 impl RelativeStrengthIndex {
     pub fn new(period: usize) -> Result<Self> {
+        if period == 0 {
+            return Err(crate::errors::TaError::InvalidParameter);
+        }
+        
         Ok(Self {
             period,
-            up_ema_indicator: Ema::new(period)?,
-            down_ema_indicator: Ema::new(period)?,
             prev_val: 0.0,
             is_new: true,
+            price_changes: VecDeque::with_capacity(period),
+            avg_gain: 0.0,
+            avg_loss: 0.0,
         })
     }
 }
@@ -99,26 +105,67 @@ impl Next<f64> for RelativeStrengthIndex {
     type Output = f64;
 
     fn next(&mut self, input: f64) -> Self::Output {
-        let mut up = 0.0;
-        let mut down = 0.0;
-
+        // Handle the first input
         if self.is_new {
             self.is_new = false;
-            // Initialize with some small seed numbers to avoid division by zero
-            up = 0.1;
-            down = 0.1;
-        } else {
-            if input > self.prev_val {
-                up = input - self.prev_val;
-            } else {
-                down = self.prev_val - input;
-            }
+            self.prev_val = input;
+            return std::f64::NAN; // TA-Lib returns NaN for first values
         }
-
+        
+        // Calculate price change
+        let change = input - self.prev_val;
         self.prev_val = input;
-        let up_ema = self.up_ema_indicator.next(up);
-        let down_ema = self.down_ema_indicator.next(down);
-        100.0 * up_ema / (up_ema + down_ema)
+        
+        // Split the change into gain and loss components
+        let (gain, loss) = if change >= 0.0 {
+            (change, 0.0)
+        } else {
+            (0.0, -change) // Make loss positive
+        };
+        
+        // Store price change data
+        self.price_changes.push_back((gain, loss));
+        
+        // If we don't have a full period of price changes yet, return NaN
+        if self.price_changes.len() < self.period {
+            return std::f64::NAN;
+        }
+        
+        // Keep only the changes needed for the calculation
+        while self.price_changes.len() > self.period {
+            self.price_changes.pop_front();
+        }
+        
+        // First time we have enough data - use simple average
+        if self.price_changes.len() == self.period && self.avg_gain == 0.0 && self.avg_loss == 0.0 {
+            // Calculate initial averages using simple average method
+            let mut sum_gains = 0.0;
+            let mut sum_losses = 0.0;
+            
+            for &(gain, loss) in self.price_changes.iter() {
+                sum_gains += gain;
+                sum_losses += loss;
+            }
+            
+            self.avg_gain = sum_gains / self.period as f64;
+            self.avg_loss = sum_losses / self.period as f64;
+        } else {
+            // For subsequent calculations, use Wilder's smoothing
+            self.avg_gain = ((self.avg_gain * (self.period as f64 - 1.0)) + gain) / self.period as f64;
+            self.avg_loss = ((self.avg_loss * (self.period as f64 - 1.0)) + loss) / self.period as f64;
+        }
+        
+        // Calculate RSI
+        if self.avg_loss == 0.0 {
+            if self.avg_gain == 0.0 {
+                return 50.0; // No movement
+            }
+            return 100.0; // Only gains
+        }
+        
+        // RSI = 100 - (100 / (1 + RS))
+        let rs = self.avg_gain / self.avg_loss;
+        100.0 - (100.0 / (1.0 + rs))
     }
 }
 
@@ -134,8 +181,9 @@ impl Reset for RelativeStrengthIndex {
     fn reset(&mut self) {
         self.is_new = true;
         self.prev_val = 0.0;
-        self.up_ema_indicator.reset();
-        self.down_ema_indicator.reset();
+        self.price_changes.clear();
+        self.avg_gain = 0.0;
+        self.avg_loss = 0.0;
     }
 }
 
@@ -156,7 +204,30 @@ mod tests {
     use super::*;
     use crate::test_helper::*;
 
-    test_indicator!(RelativeStrengthIndex);
+    // Custom version of test_indicator that works with RSI's NaN values
+    #[test]
+    fn test_indicator() {
+        let bar = Bar::new();
+
+        // ensure Default trait is implemented
+        let mut indicator = RelativeStrengthIndex::default();
+
+        // ensure Next<f64> is implemented - accept NaN for RSI first value
+        let first_output = indicator.next(12.3);
+        assert!(first_output.is_nan());
+
+        // ensure next accepts &DataItem as well
+        indicator.next(&bar);
+
+        // ensure Reset is implemented and works correctly
+        indicator.reset();
+        let reset_output = indicator.next(12.3);
+        assert!(reset_output.is_nan());
+        assert!(first_output.is_nan());
+
+        // ensure Display is implemented
+        format!("{}", indicator);
+    }
 
     #[test]
     fn test_new() {
@@ -164,24 +235,77 @@ mod tests {
         assert!(RelativeStrengthIndex::new(1).is_ok());
     }
 
+    /// TA-Lib RSI Values for Test Cases (period=3)
+    /// ============================================================
+    /// Step  Price  TA-Lib RSI  Rounded
+    ///     1   10.0         NaN      NaN
+    ///     2   10.5         NaN      NaN
+    ///     3   10.0         NaN      NaN
+    ///     4    9.5   33.333333     33.0
+    ///     5    9.0   22.222222     22.0
+    ///     6   10.0   61.111111     61.0
+    ///     7   10.5   71.717172     72.0
+    ///     8   17.2   95.636590     96.0
     #[test]
     fn test_next() {
         let mut rsi = RelativeStrengthIndex::new(3).unwrap();
-        assert_eq!(rsi.next(10.0), 50.0);
-        assert_eq!(rsi.next(10.5).round(), 86.0);
-        assert_eq!(rsi.next(10.0).round(), 35.0);
-        assert_eq!(rsi.next(9.5).round(), 16.0);
+        
+        // First value: TA-Lib returns NaN for the first data point
+        let first = rsi.next(10.0);
+        assert!(first.is_nan());
+        
+        // Second value: TA-Lib returns NaN for the second data point
+        let second = rsi.next(10.5);
+        assert!(second.is_nan());
+        
+        // Third value: TA-Lib returns NaN for the third data point
+        let third = rsi.next(10.0);
+        assert!(third.is_nan());
+        
+        // Fourth value: Now we have enough data for a real RSI calculation
+        let fourth = rsi.next(9.5);
+        
+        // Matches TA-Lib value of 33.333 (rounds to 33)
+        assert_eq!(fourth.round(), 33.0);
+        
+        // Fifth value: Continues with valid RSI values
+        let fifth = rsi.next(9.0);
+        assert_eq!(fifth.round(), 22.0); // TA-Lib: 22.222 -> 22
+        
+        // Sixth value
+        let sixth = rsi.next(10.0);
+        assert_eq!(sixth.round(), 61.0); // TA-Lib: 61.111 -> 61
+        
+        // Seventh value
+        let seventh = rsi.next(10.5);
+        assert_eq!(seventh.round(), 72.0); // TA-Lib: 71.717 -> 72
+
+        let eighth = rsi.next(17.2);
+        assert!((eighth - 95.6365903070).abs() < f64::EPSILON);
     }
 
     #[test]
     fn test_reset() {
         let mut rsi = RelativeStrengthIndex::new(3).unwrap();
-        assert_eq!(rsi.next(10.0), 50.0);
-        assert_eq!(rsi.next(10.5).round(), 86.0);
+        
+        // First value after initialization is NaN
+        let first = rsi.next(10.0);
+        assert!(first.is_nan());
+        
+        // Second value is NaN
+        let second = rsi.next(10.5);
+        assert!(second.is_nan());
 
+        // After reset, behavior should repeat
         rsi.reset();
-        assert_eq!(rsi.next(10.0).round(), 50.0);
-        assert_eq!(rsi.next(10.5).round(), 86.0);
+        
+        // First value after reset is NaN
+        let first_after_reset = rsi.next(10.0);
+        assert!(first_after_reset.is_nan());
+        
+        // Second value after reset is NaN
+        let second_after_reset = rsi.next(10.5);
+        assert!(second_after_reset.is_nan());
     }
 
     #[test]
@@ -195,3 +319,4 @@ mod tests {
         assert_eq!(format!("{}", rsi), "RSI(16)");
     }
 }
+
