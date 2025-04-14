@@ -2,7 +2,6 @@ use std::fmt;
 
 use crate::errors::{Result, TaError};
 use crate::traits::{Close, Next, Period, Reset};
-#[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 
 /// Kaufman's Efficiency Ratio (ER).
@@ -30,8 +29,7 @@ use serde::{Deserialize, Serialize};
 /// ```
 
 #[doc(alias = "ER")]
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EfficiencyRatio {
     period: usize,
     index: usize,

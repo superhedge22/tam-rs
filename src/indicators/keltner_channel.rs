@@ -3,7 +3,6 @@ use std::fmt;
 use crate::errors::Result;
 use crate::indicators::{AverageTrueRange, ExponentialMovingAverage};
 use crate::{Close, High, Low, Next, Period, Reset};
-#[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 
 /// Keltner Channel (KC).
@@ -47,8 +46,7 @@ use serde::{Deserialize, Serialize};
 ///
 /// * [Keltner channel, Wikipedia](https://en.wikipedia.org/wiki/Keltner_channel)
 #[doc(alias = "KC")]
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct KeltnerChannel {
     period: usize,
     multiplier: f64,

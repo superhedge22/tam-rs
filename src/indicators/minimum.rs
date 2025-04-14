@@ -2,7 +2,6 @@ use std::fmt;
 
 use crate::errors::{Result, TaError};
 use crate::{Low, Next, Period, Reset};
-#[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 
 /// Returns the lowest value in a given time frame.
@@ -23,8 +22,7 @@ use serde::{Deserialize, Serialize};
 /// assert_eq!(min.next(12.0), 10.0);
 /// assert_eq!(min.next(13.0), 11.0);
 /// ```
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Minimum {
     period: usize,
     min_index: usize,

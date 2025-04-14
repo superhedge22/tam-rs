@@ -2,7 +2,6 @@ use std::fmt;
 
 use crate::errors::{Result, TaError};
 use crate::traits::{Close, Next, Period, Reset};
-#[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 
 /// Rate of Change (ROC)
@@ -39,8 +38,7 @@ use serde::{Deserialize, Serialize};
 /// * [Rate of Change, Wikipedia](https://en.wikipedia.org/wiki/Momentum_(technical_analysis))
 ///
 #[doc(alias = "ROC")]
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RateOfChange {
     period: usize,
     index: usize,

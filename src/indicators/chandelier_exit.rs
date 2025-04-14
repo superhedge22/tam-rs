@@ -1,6 +1,4 @@
 use std::fmt;
-
-#[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 
 use crate::errors::Result;
@@ -51,8 +49,7 @@ use crate::{Close, High, Low, Next, Period, Reset};
 /// * [Chandelier Exit, StockCharts](https://school.stockcharts.com/doku.php?id=technical_indicators:chandelier_exit)
 ///
 #[doc(alias = "CE")]
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ChandelierExit {
     atr: AverageTrueRange,
     min: Minimum,

@@ -5,7 +5,6 @@ extern crate ta;
 
 #[cfg(test)]
 mod test {
-    #[cfg(feature = "serde")]
     mod serde {
         use ta::indicators::SimpleMovingAverage;
         use ta::Next;
@@ -14,8 +13,8 @@ mod test {
         #[test]
         fn test_serde() {
             let mut macd = SimpleMovingAverage::new(20).unwrap();
-            let bytes = bincode::serialize(&macd).unwrap();
-            let mut deserialized: SimpleMovingAverage = bincode::deserialize(&bytes).unwrap();
+            let bytes = bincode::serde::encode_to_vec(&macd, bincode::config::standard()).unwrap();
+            let mut deserialized: SimpleMovingAverage = bincode::serde::decode_from_slice(&bytes, bincode::config::standard()).unwrap().0;
 
             assert_eq!(deserialized.next(2.0), macd.next(2.0));
         }

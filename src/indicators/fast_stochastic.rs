@@ -3,7 +3,6 @@ use std::fmt;
 use crate::errors::Result;
 use crate::indicators::{Maximum, Minimum};
 use crate::{Close, High, Low, Next, Period, Reset};
-#[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 
 /// Fast stochastic oscillator.
@@ -40,8 +39,7 @@ use serde::{Deserialize, Serialize};
 /// assert_eq!(stoch.next(35.0), 75.0);
 /// assert_eq!(stoch.next(15.0), 0.0);
 /// ```
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct FastStochastic {
     period: usize,
     minimum: Minimum,

@@ -2,7 +2,6 @@ use std::fmt;
 
 use crate::errors::{Result, TaError};
 use crate::{Close, Next, Period, Reset};
-#[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 
 /// An exponential moving average (EMA), also known as an exponentially weighted moving average
@@ -53,8 +52,7 @@ use serde::{Deserialize, Serialize};
 ///
 
 #[doc(alias = "EMA")]
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ExponentialMovingAverage {
     period: usize,
     k: f64,

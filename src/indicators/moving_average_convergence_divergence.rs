@@ -3,7 +3,6 @@ use std::fmt;
 use crate::errors::Result;
 use crate::indicators::ExponentialMovingAverage as Ema;
 use crate::{Close, Next, Period, Reset};
-#[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 
 /// Moving average converge divergence (MACD).
@@ -51,8 +50,7 @@ use serde::{Deserialize, Serialize};
 /// }
 /// ```
 #[doc(alias = "MACD")]
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MovingAverageConvergenceDivergence {
     fast_ema: Ema,
     slow_ema: Ema,

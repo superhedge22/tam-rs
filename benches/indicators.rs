@@ -12,13 +12,13 @@ use ta::{DataItem, Next};
 const ITEMS_COUNT: usize = 5_000;
 
 fn rand_data_item() -> DataItem {
-    let mut rng = rand::thread_rng();
+    let mut rng = rand::rng();
 
-    let low = rng.gen_range(0.0, 500.0);
-    let high = rng.gen_range(500.0, 1000.0);
-    let open = rng.gen_range(low, high);
-    let close = rng.gen_range(low, high);
-    let volume = rng.gen_range(0.0, 10_000.0);
+    let low = rng.random_range(0.0..500.0);
+    let high = rng.random_range(500.0..1000.0);
+    let open = rng.random_range(low..high);
+    let close = rng.random_range(low..high);
+    let volume = rng.random_range(0.0..10_000.0);
 
     DataItem::builder()
         .open(open)

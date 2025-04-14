@@ -1,6 +1,4 @@
 use std::fmt;
-
-#[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 
 use crate::errors::Result;
@@ -28,8 +26,7 @@ use crate::{Close, High, Low, Next, Period, Reset};
 /// * [Commodity Channel Index, Wikipedia](https://en.wikipedia.org/wiki/Commodity_channel_index)
 /// * [Commodity Channel Index, StockCharts](https://school.stockcharts.com/doku.php?id=technical_indicators:commodity_channel_index_cci)
 ///
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CommodityChannelIndex {
     sma: SimpleMovingAverage,
     mad: MeanAbsoluteDeviation,

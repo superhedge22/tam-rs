@@ -3,7 +3,6 @@ use std::fmt;
 use crate::errors::Result;
 use crate::indicators::ExponentialMovingAverage as Ema;
 use crate::{Close, Next, Period, Reset};
-#[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 
 /// The relative strength index (RSI).
@@ -69,8 +68,7 @@ use serde::{Deserialize, Serialize};
 /// * [RSI (Investopedia)](http://www.investopedia.com/terms/r/rsi.asp)
 ///
 #[doc(alias = "RSI")]
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RelativeStrengthIndex {
     period: usize,
     up_ema_indicator: Ema,

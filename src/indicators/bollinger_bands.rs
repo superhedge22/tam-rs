@@ -3,7 +3,6 @@ use std::fmt;
 use crate::errors::Result;
 use crate::indicators::StandardDeviation as Sd;
 use crate::{Close, Next, Period, Reset};
-#[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 
 /// A Bollinger Bands (BB).
@@ -46,8 +45,7 @@ use serde::{Deserialize, Serialize};
 ///
 /// * [Bollinger Bands, Wikipedia](https://en.wikipedia.org/wiki/Bollinger_Bands)
 #[doc(alias = "BB")]
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BollingerBands {
     period: usize,
     multiplier: f64,

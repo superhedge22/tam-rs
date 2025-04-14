@@ -1,6 +1,4 @@
 use std::fmt;
-
-#[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 
 use crate::errors::{Result, TaError};
@@ -27,8 +25,7 @@ use crate::{Close, Next, Period, Reset};
 ///
 /// * [Mean Absolute Deviation, Wikipedia](https://en.wikipedia.org/wiki/Mean_absolute_deviation)
 ///
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MeanAbsoluteDeviation {
     period: usize,
     index: usize,
