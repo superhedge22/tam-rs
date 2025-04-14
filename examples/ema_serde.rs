@@ -1,6 +1,6 @@
-use ta::indicators::ExponentialMovingAverage as Ema;
-use ta::DataItem;
-use ta::Next;
+use tam::indicators::ExponentialMovingAverage as Ema;
+use tam::DataItem;
+use tam::Next;
 
 fn main() {
     let mut ema = Ema::new(9).unwrap();
