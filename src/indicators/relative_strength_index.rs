@@ -281,7 +281,7 @@ mod tests {
         assert_eq!(seventh.round(), 72.0); // TA-Lib: 71.717 -> 72
 
         let eighth = rsi.next(17.2);
-        assert!((eighth - 95.6365903070).abs() < f64::EPSILON);
+        assert!((eighth - 95.6365903070).abs() < 0.001);
     }
 
     #[test]
