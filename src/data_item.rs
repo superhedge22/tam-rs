@@ -7,8 +7,8 @@ use serde::{Deserialize, Serialize};
 /// # Example
 ///
 /// ```
-/// use ta::DataItem;
-/// use ta::{Open, High, Low, Close, Volume};
+/// use tam::DataItem;
+/// use tam::{Open, High, Low, Close, Volume};
 ///
 /// let item = DataItem::builder()
 ///     .open(20.0)

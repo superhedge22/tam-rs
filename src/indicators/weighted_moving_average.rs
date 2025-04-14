@@ -22,8 +22,8 @@ use serde::{Deserialize, Serialize};
 /// # Example
 ///
 /// ```
-/// use ta::indicators::WeightedMovingAverage;
-/// use ta::Next;
+/// use tam::indicators::WeightedMovingAverage;
+/// use tam::Next;
 ///
 /// let mut wma = WeightedMovingAverage::new(3).unwrap();
 /// assert_eq!(wma.next(10.0), 10.0);

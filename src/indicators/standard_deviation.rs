@@ -25,8 +25,8 @@ use serde::{Deserialize, Serialize};
 /// # Example
 ///
 /// ```
-/// use ta::indicators::StandardDeviation;
-/// use ta::Next;
+/// use tam::indicators::StandardDeviation;
+/// use tam::Next;
 ///
 /// let mut sd = StandardDeviation::new(3).unwrap();
 /// assert_eq!(sd.next(10.0), 0.0);

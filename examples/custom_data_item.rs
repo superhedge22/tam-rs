@@ -1,5 +1,5 @@
-use ta::indicators::TrueRange;
-use ta::{Close, High, Low, Next};
+use tam::indicators::TrueRange;
+use tam::{Close, High, Low, Next};
 
 // You can create your own data items.
 // You may want it for different purposes, e.g.:

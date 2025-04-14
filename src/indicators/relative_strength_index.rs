@@ -52,8 +52,8 @@ use serde::{Deserialize, Serialize};
 /// # Example
 ///
 /// ```
-/// use ta::indicators::RelativeStrengthIndex;
-/// use ta::Next;
+/// use tam::indicators::RelativeStrengthIndex;
+/// use tam::Next;
 ///
 /// let mut rsi = RelativeStrengthIndex::new(3).unwrap();
 /// // First period values are NaN as per TA-Lib behavior

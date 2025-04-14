@@ -36,8 +36,8 @@ use serde::{Deserialize, Serialize};
 /// # Example
 ///
 /// ```
-/// use ta::indicators::ExponentialMovingAverage;
-/// use ta::Next;
+/// use tam::indicators::ExponentialMovingAverage;
+/// use tam::Next;
 ///
 /// let mut ema = ExponentialMovingAverage::new(3).unwrap();
 /// assert_eq!(ema.next(2.0), 2.0);

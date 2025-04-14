@@ -1,13 +1,13 @@
 extern crate csv;
-extern crate ta;
+extern crate tam;
 
 // TODO: implement some integration tests
 
 #[cfg(test)]
 mod test {
     mod serde {
-        use ta::indicators::SimpleMovingAverage;
-        use ta::Next;
+        use tam::indicators::SimpleMovingAverage;
+        use tam::Next;
 
         // Simple smoke test that serde works (not sure if this is really necessary)
         #[test]

@@ -27,8 +27,8 @@ use serde::{Deserialize, Serialize};
 /// # Example
 ///
 /// ```
-/// use ta::indicators::Correlation;
-/// use ta::Next;
+/// use tam::indicators::Correlation;
+/// use tam::Next;
 ///
 /// let mut corr = Correlation::new(3).unwrap();
 /// assert_eq!(corr.next((2.0, 3.0)), 0.0);  // First point doesn't have correlation

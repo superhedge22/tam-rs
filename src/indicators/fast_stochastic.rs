@@ -29,8 +29,8 @@ use serde::{Deserialize, Serialize};
 /// # Example
 ///
 /// ```
-/// use ta::indicators::FastStochastic;
-/// use ta::Next;
+/// use tam::indicators::FastStochastic;
+/// use tam::Next;
 ///
 /// let mut stoch = FastStochastic::new(5).unwrap();
 /// assert_eq!(stoch.next(20.0), 50.0);
