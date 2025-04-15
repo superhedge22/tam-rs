@@ -70,3 +70,6 @@ pub use self::on_balance_volume::OnBalanceVolume;
 
 mod correlation;
 pub use self::correlation::Correlation;
+
+mod average_directional_index;
+pub use self::average_directional_index::AverageDirectionalIndex;
