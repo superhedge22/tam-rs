@@ -38,7 +38,7 @@ use serde::{Deserialize, Serialize};
 /// * [Standard Deviation, Wikipedia](https://en.wikipedia.org/wiki/Standard_deviation)
 ///
 #[doc(alias = "SD")]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct StandardDeviation {
     period: usize,
     index: usize,

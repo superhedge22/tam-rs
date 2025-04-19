@@ -45,7 +45,7 @@ use serde::{Deserialize, Serialize};
 ///
 /// * [Bollinger Bands, Wikipedia](https://en.wikipedia.org/wiki/Bollinger_Bands)
 #[doc(alias = "BB")]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct BollingerBands {
     period: usize,
     multiplier: f64,

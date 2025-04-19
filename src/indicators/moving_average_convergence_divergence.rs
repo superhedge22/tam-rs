@@ -50,7 +50,7 @@ use serde::{Deserialize, Serialize};
 /// }
 /// ```
 #[doc(alias = "MACD")]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct MovingAverageConvergenceDivergence {
     fast_ema: Ema,
     slow_ema: Ema,

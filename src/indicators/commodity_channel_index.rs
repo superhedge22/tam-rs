@@ -26,7 +26,7 @@ use crate::{Close, High, Low, Next, Period, Reset};
 /// * [Commodity Channel Index, Wikipedia](https://en.wikipedia.org/wiki/Commodity_channel_index)
 /// * [Commodity Channel Index, StockCharts](https://school.stockcharts.com/doku.php?id=technical_indicators:commodity_channel_index_cci)
 ///
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct CommodityChannelIndex {
     sma: SimpleMovingAverage,
     mad: MeanAbsoluteDeviation,

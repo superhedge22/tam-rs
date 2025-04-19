@@ -38,7 +38,7 @@ use serde::{Deserialize, Serialize};
 /// * [Simple Moving Average, Wikipedia](https://en.wikipedia.org/wiki/Moving_average#Simple_moving_average)
 ///
 #[doc(alias = "SMA")]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct SimpleMovingAverage {
     period: usize,
     index: usize,

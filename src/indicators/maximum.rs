@@ -23,7 +23,7 @@ use serde::{Deserialize, Serialize};
 /// assert_eq!(max.next(4.0), 5.0);
 /// assert_eq!(max.next(8.0), 8.0);
 /// ```
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Maximum {
     period: usize,
     max_index: usize,

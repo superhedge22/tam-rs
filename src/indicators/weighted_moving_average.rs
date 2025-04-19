@@ -38,7 +38,7 @@ use serde::{Deserialize, Serialize};
 ///
 
 #[doc(alias = "WMA")]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct WeightedMovingAverage {
     period: usize,
     index: usize,

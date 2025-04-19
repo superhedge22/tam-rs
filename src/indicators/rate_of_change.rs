@@ -38,7 +38,7 @@ use serde::{Deserialize, Serialize};
 /// * [Rate of Change, Wikipedia](https://en.wikipedia.org/wiki/Momentum_(technical_analysis))
 ///
 #[doc(alias = "ROC")]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct RateOfChange {
     period: usize,
     index: usize,

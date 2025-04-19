@@ -55,7 +55,7 @@ use serde::{Deserialize, Serialize};
 ///     }
 /// }
 #[doc(alias = "ATR")]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct AverageTrueRange {
     true_range: TrueRange,
     ema: ExponentialMovingAverage,

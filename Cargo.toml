@@ -1,6 +1,6 @@
 [package]
 name = "tam"
-version = "0.0.1"
+version = "0.0.2"
 authors = ["Sergey Potapov <blake131313@gmail.com>", "SuperHedge <superhedge@proton.me>"]
 edition = "2021"
 description = "Technical analysis library. Implements number of indicators: EMA, SMA, RSI, MACD, Stochastic, etc."

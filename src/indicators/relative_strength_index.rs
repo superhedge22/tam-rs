@@ -68,7 +68,7 @@ use serde::{Deserialize, Serialize};
 /// * [RSI (Investopedia)](http://www.investopedia.com/terms/r/rsi.asp)
 ///
 #[doc(alias = "RSI")]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct RelativeStrengthIndex {
     period: usize,
     prev_val: f64,

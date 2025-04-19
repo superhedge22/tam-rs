@@ -53,7 +53,7 @@ use serde::{Deserialize, Serialize};
 /// * [Money Flow Index, stockcharts](https://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:money_flow_index_mfi)
 
 #[doc(alias = "MFI")]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct MoneyFlowIndex {
     period: usize,
     index: usize,

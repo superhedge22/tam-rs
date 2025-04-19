@@ -29,7 +29,7 @@ use serde::{Deserialize, Serialize};
 /// ```
 
 #[doc(alias = "ER")]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct EfficiencyRatio {
     period: usize,
     index: usize,

@@ -39,7 +39,7 @@ use serde::{Deserialize, Serialize};
 /// assert_eq!(stoch.next(35.0), 75.0);
 /// assert_eq!(stoch.next(15.0), 0.0);
 /// ```
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct FastStochastic {
     period: usize,
     minimum: Minimum,

@@ -36,7 +36,7 @@ use serde::{Deserialize, Serialize};
 /// assert_eq!(corr.next((6.0, 1.0)), -0.9607689228305228); // Strong negative correlation
 /// ```
 #[doc(alias = "CORREL")]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Correlation {
     period: usize,
     index: usize,

@@ -48,7 +48,7 @@ use serde::{Deserialize, Serialize};
 ///     }
 /// }
 /// ```
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct TrueRange {
     prev_close: Option<f64>,
 }

@@ -46,7 +46,7 @@ use serde::{Deserialize, Serialize};
 ///
 /// * [Keltner channel, Wikipedia](https://en.wikipedia.org/wiki/Keltner_channel)
 #[doc(alias = "KC")]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct KeltnerChannel {
     period: usize,
     multiplier: f64,

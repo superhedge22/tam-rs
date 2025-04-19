@@ -22,7 +22,7 @@ use serde::{Deserialize, Serialize};
 /// assert_eq!(min.next(12.0), 10.0);
 /// assert_eq!(min.next(13.0), 11.0);
 /// ```
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Minimum {
     period: usize,
     min_index: usize,

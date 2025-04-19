@@ -52,7 +52,7 @@ use serde::{Deserialize, Serialize};
 ///
 
 #[doc(alias = "EMA")]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct ExponentialMovingAverage {
     period: usize,
     k: f64,

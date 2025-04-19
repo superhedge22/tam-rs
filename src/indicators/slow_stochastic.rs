@@ -27,7 +27,7 @@ use serde::{Deserialize, Serialize};
 /// assert_eq!(stoch.next(30.0).round(), 31.0);
 /// assert_eq!(stoch.next(55.0).round(), 77.0);
 /// ```
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct SlowStochastic {
     fast_stochastic: FastStochastic,
     ema: ExponentialMovingAverage,

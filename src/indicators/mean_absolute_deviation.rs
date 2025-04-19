@@ -25,7 +25,7 @@ use crate::{Close, Next, Period, Reset};
 ///
 /// * [Mean Absolute Deviation, Wikipedia](https://en.wikipedia.org/wiki/Mean_absolute_deviation)
 ///
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct MeanAbsoluteDeviation {
     period: usize,
     index: usize,

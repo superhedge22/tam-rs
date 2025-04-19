@@ -49,7 +49,7 @@ use crate::{Close, High, Low, Next, Period, Reset};
 /// * [Chandelier Exit, StockCharts](https://school.stockcharts.com/doku.php?id=technical_indicators:chandelier_exit)
 ///
 #[doc(alias = "CE")]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct ChandelierExit {
     atr: AverageTrueRange,
     min: Minimum,

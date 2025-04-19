@@ -57,7 +57,7 @@ const MAX_VALUE: f64 = 100.0;
 /// let _adx_value = adx.next(&item);
 /// ```
 #[doc(alias = "ADX")]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct AverageDirectionalIndex {
     period: usize,
     prev_high: Option<f64>,
